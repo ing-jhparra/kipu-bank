@@ -31,22 +31,21 @@
 ## Errores Personalizados (Custom Errors)
 
 
-error ExcedeLimiteDeposito(); : Validar que los depósitos no superen los límites establecidos.
-error CantidadCero(); : Prevenir operaciones con montos inválidos.
-error BalanceInsuficiente(); : Verificar que el usuario tenga fondos suficientes.
-error ExcedeLimiteRetiro(); : Controlar los límites de retiro.
-error TransferenciaFallida(); : Manejar fallas genéricas en transferencias.
+* error ExcedeLimiteDeposito(); : Validar que los depósitos no superen los límites establecidos.
+* error CantidadCero(); : Prevenir operaciones con montos inválidos.
+* error BalanceInsuficiente(); : Verificar que el usuario tenga fondos suficientes.
+* error ExcedeLimiteRetiro(); : Controlar los límites de retiro.
+* error TransferenciaFallida(); : Manejar fallas genéricas en transferencias.
 
 
 ## Constructor (Constructor)
-
 
 constructor(uint256 _limiteTotalDeposito, uint256 _limiteRetiro) {
         limiteTotalDeposito = _limiteTotalDeposito;
         limiteRetiro = _limiteRetiro;
 }
 
-Inicializar el contrato con parámetros configurables que definen los límites operativos desde el momento del despliegue.
+* Inicializar el contrato con parámetros configurables que definen los límites operativos desde el momento del despliegue.
 
 ## Modificador (Modifier)
 
