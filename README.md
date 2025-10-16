@@ -10,31 +10,23 @@
 
 ## Variables Immutable o Constant
 
-```
-uint256 public immutable limiteTotalDeposito; 
-uint256 public immutable limiteRetiro;
-```
+* uint256 public immutable limiteTotalDeposito; : Establece el límite máximo total de depósitos que el contrato puede aceptar. 
+* uint256 public immutable limiteRetiro; : Define el límite máximo que se puede retirar en una sola transacción
 
 ## Variables de almacenamiento (Storage)
 
-```
-uint256 public totalDepositedo;
-uint256 public cantidadDeposito;
-uint256 public cantidadRetiro;
-```
+* uint256 public totalDepositedo; : Llevar el registro del total acumulado de todos los depósitos realizados.
+* uint256 public cantidadDeposito; : Representar el monto de un depósito individual.
+* uint256 public cantidadRetiro; : Representar el monto de un retiro individual.
 
 ## Mapping
 
-```
-mapping(address => uint256) private balances;
-```
+* mapping(address => uint256) private balances; : Almacenar los balances de tokens/ETH por dirección
 
 ## Eventos (events)
 
-```
-event Deposito(address indexed usuario, uint256 cantidad);
-event Retiro(address indexed usuario, uint256 cantidad);
-```
+* event Deposito(address indexed usuario, uint256 cantidad); : Registrar cuando un usuario realiza un depósito en un contrato.
+* event Retiro(address indexed usuario, uint256 cantidad); : Registrar cuando un usuario realiza un retiro del contrato.
 
 ## Errores Personalizados (Custom Errors)
 
