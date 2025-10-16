@@ -119,7 +119,10 @@ constructor(uint256 _limiteTotalDeposito, uint256 _limiteRetiro) {
 
 Usando valores específicos en wei
 
-![Valores en wei](img\constructor.png)
+
+<div align="center">
+  <img src="img\constructor.png" alt="Proyecto en desarrollo">
+</div>
 
 
 
