@@ -87,7 +87,7 @@ error TransferenciaFallida();
 
 * Inicializar el contrato con parámetros configurables que definen los límites operativos desde el momento del despliegue.
 
-        Para _limiteTotalDeposito (límite total de depósito):
+> Para _limiteTotalDeposito (límite total de depósito):
 
         Valores en wei: 1000000000000000000 (equivale a 1 ETH)
 
@@ -99,7 +99,7 @@ error TransferenciaFallida();
         - 5000000000000000000  -> 5 ETH
         - 10000000000000000000 -> 10 ETH
 
-        Para _limiteRetiro (límite de retiro):
+> Para _limiteRetiro (límite de retiro):
 
         Valores en wei: Similar al límite de depósito
 
@@ -118,7 +118,6 @@ constructor(uint256 _limiteTotalDeposito, uint256 _limiteRetiro) {
 ```
 
 Usando valores específicos en wei
-
 
 <div align="center">
   <img src="img\constructor.png" alt="Valores específicos en wei">
@@ -151,6 +150,7 @@ function deposito() external payable {
 
 ## Función Private
 
+```
 function _incrementarCantidadDeposito() private {
         cantidadDeposito += 1;
 }
@@ -158,8 +158,11 @@ function _incrementarCantidadDeposito() private {
 function _incrementarCantidadRetiro() private {
         cantidadRetiro += 1;
 }
+```
+
 ## Función External View
 
 ## Autor
+
 | [<img src="https://avatars.githubusercontent.com/u/123877201?v=4" width=115><br><sub>Jesus H. Parra B.</sub>](https://github.com/ing-jhparra)
 | :---: |
