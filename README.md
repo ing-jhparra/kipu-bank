@@ -124,7 +124,7 @@ Usando valores específicos en wei
   <img src="img\constructor.png" alt="Valores específicos en wei">
 </div>
 
-
+Importante en Solidity se trabaja en wei (1 ETH = 10^18 wei)
 
 ## Modificador (Modifier)
 
