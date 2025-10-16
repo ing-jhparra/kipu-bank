@@ -121,7 +121,7 @@ Usando valores específicos en wei
 
 
 <div align="center">
-  <img src="img\constructor.png" alt="Proyecto en desarrollo">
+  <img src="img\constructor.png" alt="Valores específicos en wei">
 </div>
 
 
