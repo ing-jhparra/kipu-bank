@@ -114,7 +114,7 @@ constructor(uint256 _limiteTotalDeposito, uint256 _limiteRetiro) {
 }
 ```
 
-Usando valores específicos en wei
+Usando valores específicos en wei al hacer deploy el contrato.
 
 <div align="center">
   <img src="img\constructor.png" alt="Valores específicos en wei">
