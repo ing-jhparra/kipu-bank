@@ -1,65 +1,85 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+import "hardhat/console.sol";
+
 contract KipuBankContract {
+    
     mapping(address => uint256) private balances;
-    uint256 public totalDepositedo;
-    uint256 public immutable limiteTotalDeposito; 
-    uint256 public immutable limiteRetiro;
+
+    // Variables de estado
+    uint256 public totalDepositado;
     uint256 public cantidadDeposito;
     uint256 public cantidadRetiro;
+    
+    // Constantes
+    uint256 public immutable limiteTotalDeposito; 
+    uint256 public immutable limiteRetiro;
 
     // Eventos 
     event Deposito(address indexed usuario, uint256 cantidad);
     event Retiro(address indexed usuario, uint256 cantidad);
 
-    error ExcedeLimiteDeposito();
-    error CantidadCero();
+    error ExcedeLimiteDeposito(uint256 cantidadEnviada);
+    error CantidadCero(uint256 cantidadEnviada);
     error BalanceInsuficiente();
-    error ExcedeLimiteRetiro();
+    error ExcedeLimiteRetiro(uint256 cantidadEnviada);
     error TransferenciaFallida();
 
+    // Constructor
     constructor(uint256 _limiteTotalDeposito, uint256 _limiteRetiro) {
         limiteTotalDeposito = _limiteTotalDeposito;
         limiteRetiro = _limiteRetiro;
     }
 
+    // Modificadores
+    modifier noCero(uint256 _cantidad) {
+        if (_cantidad == 0) revert CantidadCero(_cantidad);
+        _;
+    }
+    
+    modifier dentroLimiteDeposito(uint256 _cantidad) {
+        if (totalDepositado + _cantidad > limiteTotalDeposito) {
+            revert ExcedeLimiteDeposito(_cantidad);
+        }
+        _;
+    }
 
-    function deposito() external payable {
+    modifier dentroLimiteRetiro(uint256 _cantidad) {
+        if (_cantidad > limiteRetiro) {
+            revert ExcedeLimiteRetiro(_cantidad);
+        }
+        _;
+    }
+    
+    modifier balanceSuficiente(uint256 _cantidad) {
+        if (balances[msg.sender] < _cantidad) {
+            revert BalanceInsuficiente();
+        }
+        _;
+    }
 
-        // msg.value es cantidad de ETH (en wei)
-        bool isZeroAmount = msg.value == 0;
-        bool exceedsCap = totalDepositedo + msg.value > limiteTotalDeposito;
-
-        if (isZeroAmount) revert CantidadCero();
-        if (exceedsCap) revert ExcedeLimiteDeposito();
+    // Funciones
+    function deposito() external payable noCero(msg.value) dentroLimiteDeposito(msg.value) {
 
         // msg.sender es la dirección (billetera o contrato)
         balances[msg.sender] += msg.value;
-        totalDepositedo += msg.value;
+        totalDepositado += msg.value;
         _incrementarCantidadDeposito();
 
         emit Deposito(msg.sender, msg.value);
     }
 
-    function retiro(uint256 cantidad) external {
+    function retiro(uint256 _cantidad) external noCero(_cantidad) dentroLimiteRetiro(_cantidad) balanceSuficiente(_cantidad) {
         
-        bool isZeroAmount = cantidad == 0;
-        bool insufficientBalance = cantidad > balances[msg.sender];
-        bool exceedsLimit = cantidad > limiteRetiro;
-
-        if (isZeroAmount) revert CantidadCero();
-        if (insufficientBalance) revert BalanceInsuficiente();
-        if (exceedsLimit) revert ExcedeLimiteRetiro();
-
-        balances[msg.sender] -= cantidad;
-        totalDepositedo -= cantidad;
+        balances[msg.sender] -= _cantidad;
+        totalDepositado -= _cantidad;
         _incrementarCantidadRetiro();
 
-        (bool success, ) = payable(msg.sender).call{value: cantidad}("");
+        (bool success, ) = payable(msg.sender).call{value: _cantidad}("");
         if (!success) revert TransferenciaFallida();
 
-        emit Retiro(msg.sender, cantidad);
+        emit Retiro(msg.sender, _cantidad);
     }
 
     function getBalance(address usuario) external view returns (uint256) {
