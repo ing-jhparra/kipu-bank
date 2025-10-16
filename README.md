@@ -87,7 +87,7 @@ error TransferenciaFallida();
 
 * Inicializar el contrato con parámetros configurables que definen los límites operativos desde el momento del despliegue.
 
-> Para _limiteTotalDeposito (límite total de depósito):
+Para _limiteTotalDeposito (límite total de depósito):
 
 Valores en wei: 1000000000000000000 (equivale a 1 ETH)
 Valores en ether: Usando 1 ether, 10 ether, etc.
@@ -97,7 +97,7 @@ Ejemplo comunes
 - 5000000000000000000  -> 5 ETH
 - 10000000000000000000 -> 10 ETH
 
-> Para _limiteRetiro (límite de retiro):
+Para _limiteRetiro (límite de retiro):
 
 Valores en wei: Similar al límite de depósito
 
