@@ -41,12 +41,13 @@
 ## Constructor (Constructor)
 
 * Inicializar el contrato con parámetros configurables que definen los límites operativos desde el momento del despliegue.
-'''
+
+```
 constructor(uint256 _limiteTotalDeposito, uint256 _limiteRetiro) {
         limiteTotalDeposito = _limiteTotalDeposito;
         limiteRetiro = _limiteRetiro;
 }
-'''
+```
 
 ## Modificador (Modifier)
 
