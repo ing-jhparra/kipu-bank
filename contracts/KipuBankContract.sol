@@ -13,11 +13,11 @@ contract KipuBankContract {
     event Deposito(address indexed usuario, uint256 cantidad);
     event Retiro(address indexed usuario, uint256 cantidad);
 
-    error DepositExceedsBankCap();
-    error ZeroAmount();
-    error InsufficientBalance();
-    error WithdrawalExceedsLimit();
-    error TransferFailed();
+    error ExcedeLimiteDeposito();
+    error CantidadCero();
+    error BalanceInsuficiente();
+    error ExcedeLimiteRetiro();
+    error TransferenciaFallida();
 
     constructor(uint256 _limiteTotalDeposito, uint256 _limiteRetiro) {
         limiteTotalDeposito = _limiteTotalDeposito;
@@ -31,8 +31,8 @@ contract KipuBankContract {
         bool isZeroAmount = msg.value == 0;
         bool exceedsCap = totalDepositedo + msg.value > limiteTotalDeposito;
 
-        if (isZeroAmount) revert ZeroAmount();
-        if (exceedsCap) revert DepositExceedsBankCap();
+        if (isZeroAmount) revert CantidadCero();
+        if (exceedsCap) revert ExcedeLimiteDeposito();
 
         // msg.sender es la dirección (billetera o contrato)
         balances[msg.sender] += msg.value;
@@ -48,16 +48,16 @@ contract KipuBankContract {
         bool insufficientBalance = cantidad > balances[msg.sender];
         bool exceedsLimit = cantidad > limiteRetiro;
 
-        if (isZeroAmount) revert ZeroAmount();
-        if (insufficientBalance) revert InsufficientBalance();
-        if (exceedsLimit) revert WithdrawalExceedsLimit();
+        if (isZeroAmount) revert CantidadCero();
+        if (insufficientBalance) revert BalanceInsuficiente();
+        if (exceedsLimit) revert ExcedeLimiteRetiro();
 
         balances[msg.sender] -= cantidad;
         totalDepositedo -= cantidad;
         _incrementarCantidadRetiro();
 
         (bool success, ) = payable(msg.sender).call{value: cantidad}("");
-        if (!success) revert TransferFailed();
+        if (!success) revert TransferenciaFallida();
 
         emit Retiro(msg.sender, cantidad);
     }
