@@ -10,14 +10,32 @@
 
 ## Variables Immutable o Constant
 
-* uint256 public immutable limiteTotalDeposito; : Establece el límite máximo total de depósitos que el contrato puede aceptar. 
-* uint256 public immutable limiteRetiro; : Define el límite máximo que se puede retirar en una sola transacción
+* Establece el límite máximo total de depósitos que el contrato puede aceptar.
+```
+uint256 public immutable limiteTotalDeposito; 
+```
+
+* Define el límite máximo que se puede retirar en una sola transacción
+```
+uint256 public immutable limiteRetiro;
+```
 
 ## Variables de almacenamiento (Storage)
 
-* uint256 public totalDepositedo; : Llevar el registro del total acumulado de todos los depósitos realizados.
-* uint256 public cantidadDeposito; : Representar el monto de un depósito individual.
-* uint256 public cantidadRetiro; : Representar el monto de un retiro individual.
+* Llevar el registro del total acumulado de todos los depósitos realizados.
+```
+uint256 public totalDepositedo;
+``` 
+
+* Representar el monto de un depósito individual.
+```
+uint256 public cantidadDeposito;
+```
+
+* Representar el monto de un retiro individual.
+```
+uint256 public cantidadRetiro;
+``` 
 
 ## Mapping
 
