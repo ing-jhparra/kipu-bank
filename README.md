@@ -89,9 +89,9 @@ error TransferenciaFallida();
 
 > Para _limiteTotalDeposito (límite total de depósito):
 
-        Valores en wei: 1000000000000000000 (equivale a 1 ETH)
+        - Valores en wei: 1000000000000000000 (equivale a 1 ETH)
 
-        Valores en ether: Usando 1 ether, 10 ether, etc.
+        - Valores en ether: Usando 1 ether, 10 ether, etc.
 
         Ejemplo comunes
 
@@ -101,9 +101,9 @@ error TransferenciaFallida();
 
 > Para _limiteRetiro (límite de retiro):
 
-        Valores en wei: Similar al límite de depósito
+        - Valores en wei: Similar al límite de depósito
 
-        Ejemplos
+        - Ejemplos
 
         - 100000000000000000   ->  0.1 ETH
         - 500000000000000000   -> 0.5 ETH
