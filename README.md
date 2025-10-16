@@ -39,22 +39,49 @@ uint256 public cantidadRetiro;
 
 ## Mapping
 
-* mapping(address => uint256) private balances; : Almacenar los balances de tokens/ETH por dirección
+* Almacenar los balances de tokens/ETH por dirección
+```
+mapping(address => uint256) private balances;
+```
 
 ## Eventos (events)
 
-* event Deposito(address indexed usuario, uint256 cantidad); : Registrar cuando un usuario realiza un depósito en un contrato.
-* event Retiro(address indexed usuario, uint256 cantidad); : Registrar cuando un usuario realiza un retiro del contrato.
+* Registrar cuando un usuario realiza un depósito en un contrato.
+```
+event Deposito(address indexed usuario, uint256 cantidad);
+```
+
+* Registrar cuando un usuario realiza un retiro del contrato.
+```
+event Retiro(address indexed usuario, uint256 cantidad); 
+```
 
 ## Errores Personalizados (Custom Errors)
 
+* Validar que los depósitos no superen los límites establecidos.
+```
+error ExcedeLimiteDeposito();
+```
 
-* error ExcedeLimiteDeposito(); : Validar que los depósitos no superen los límites establecidos.
-* error CantidadCero(); : Prevenir operaciones con montos inválidos.
-* error BalanceInsuficiente(); : Verificar que el usuario tenga fondos suficientes.
-* error ExcedeLimiteRetiro(); : Controlar los límites de retiro.
-* error TransferenciaFallida(); : Manejar fallas genéricas en transferencias.
+* Prevenir operaciones con montos inválidos. 
+```
+error CantidadCero();
+``` 
 
+* Verificar que el usuario tenga fondos suficientes.
+```
+error BalanceInsuficiente();
+```
+
+* Controlar los límites de retiro.
+``` 
+error ExcedeLimiteRetiro(); 
+```
+
+* Manejar fallas genéricas en transferencias.
+```
+error TransferenciaFallida();
+``` 
 
 ## Constructor (Constructor)
 
