@@ -59,12 +59,12 @@ contract KipuBankContract {
     }
 
     modifier cantidadValida(uint256 _cantidad) {
-        require(_cantidad > 0, "CantidadCero");
+        require(_cantidad > 0, "Cantidad Cero");
         _;
     }
     
     modifier fondosSuficientes(uint256 _cantidad) {
-        require(balances[msg.sender] >= _cantidad, "FondosInsuficientes");
+        require(balances[msg.sender] >= _cantidad, "Fondos Insuficientes");
         _;
     }
 
@@ -98,13 +98,15 @@ contract KipuBankContract {
         require (resultado, "Transferencia Fallida");
     }
 
-    function retiro() external payable noCero(msg.value) dentroLimiteRetiro(msg.value) balanceSuficiente(msg.value) {
+    function retiro() external payable noCero(msg.value) dentroLimiteRetiro(msg.value) {
         
+        require(balances[msg.sender] >= msg.value, "Balance Insuficiente");
+
         balances[msg.sender] -= msg.value;
         totalDepositado -= msg.value;
         _incrementarCantidadRetiro();
 
-        (bool success, ) = payable(msg.sender).call{value: msg.value}("");
+        (bool success, ) = msg.sender.call{value: msg.value}("");
         if (!success) revert TransferenciaFallida();
 
         emit Retiro(msg.sender, msg.value);
