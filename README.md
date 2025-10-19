@@ -8,6 +8,20 @@
   <img src="https://img.shields.io/badge/Estado-En%20desarrollo-yellow" alt="Proyecto en desarrollo">
 </div>
 
+## Introducción
+
+Un smart contract o "contrato inteligente" es un programa informático que se ejecuta de forma automática y autónoma en una blockchain (cadena de bloques).
+
+A diferencia de un contrato tradicional, no depende de un intermediario (como un notario o un banco) para su cumplimiento. En su lugar, las reglas y cláusulas 
+
+acordadas se escriben en código de programación. Cuando se cumplen las condiciones predefinidas, el contrato se ejecuta de inmediato, liberando los fondos o 
+
+activos digitales involucrados de manera inmutable, transparente y segura. En esencia, un smart contract funciona con una lógica de "Si pasa X, entonces se 
+
+ejecuta Y". Por ejemplo: "Si el comprador envía 1 ETH, entonces la propiedad del token NFT se transfiere a su cartera".
+
+Estos contratos son la base para aplicaciones descentralizadas (dApps), finanzas descentralizadas (DeFi) y muchos otros avances en el ecosistema Web3.
+
 ## Variables Immutable o Constant
 
 * Establece el límite máximo total de depósitos que el contrato puede aceptar.
