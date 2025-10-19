@@ -132,6 +132,50 @@ Importante en Solidity se trabaja en wei (1 ETH = 10^18 wei)
 
 ## Modificador (Modifier)
 
+```
+modifier noCero(uint256 _cantidad) {
+        if (_cantidad == 0) revert CantidadCero();
+        _;
+}
+```    
+```
+modifier dentroLimiteDeposito(uint256 _cantidad) {
+        if (totalDepositado + _cantidad > limiteTotalDeposito) {
+            revert ExcedeLimiteDeposito();
+        }
+        _;
+}
+```
+
+```
+modifier dentroLimiteRetiro(uint256 _cantidad) {
+        if (_cantidad > limiteRetiro) {
+            revert ExcedeLimiteRetiro();
+        }
+        _;
+}
+```
+```    
+modifier balanceSuficiente(uint256 _cantidad) {
+        if (balances[msg.sender] < _cantidad) {
+            revert BalanceInsuficiente();
+        }
+        _;
+}
+```
+```
+modifier cantidadValida(uint256 _cantidad) {
+        require(_cantidad > 0, "Cantidad Cero");
+        _;
+}
+```
+```    
+modifier fondosSuficientes(uint256 _cantidad) {
+        require(balances[msg.sender] >= _cantidad, "Fondos Insuficientes");
+        _;
+}
+```
+
 ## Función External Payable
 
 ```
