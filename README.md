@@ -211,6 +211,12 @@ function _incrementarCantidadRetiro() private {
 
 ## Función External View
 
+```
+function getBalance(address usuario) external view returns (uint256) {
+        return balances[usuario];
+}
+```
+
 ## Autor
 
 | [<img src="https://avatars.githubusercontent.com/u/123877201?v=4" width=115><br><sub>Jesus H. Parra B.</sub>](https://github.com/ing-jhparra)
