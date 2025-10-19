@@ -132,12 +132,16 @@ Importante en Solidity se trabaja en wei (1 ETH = 10^18 wei)
 
 ## Modificador (Modifier)
 
+* Si la cantidad es igual a 0, revierte la transacción con el error personalizado CantidadCero
+
 ```
 modifier noCero(uint256 _cantidad) {
         if (_cantidad == 0) revert CantidadCero();
         _;
 }
-```    
+```
+
+* Verifica que el depósito no haga que el total depositado en el banco exceda el límite máximo permitido    
 ```
 modifier dentroLimiteDeposito(uint256 _cantidad) {
         if (totalDepositado + _cantidad > limiteTotalDeposito) {
@@ -147,6 +151,8 @@ modifier dentroLimiteDeposito(uint256 _cantidad) {
 }
 ```
 
+* Verifica que el monto del retiro individual no exceda el límite máximo permitido por transacción
+
 ```
 modifier dentroLimiteRetiro(uint256 _cantidad) {
         if (_cantidad > limiteRetiro) {
@@ -155,6 +161,9 @@ modifier dentroLimiteRetiro(uint256 _cantidad) {
         _;
 }
 ```
+
+* Verifica que el usuario tenga suficientes fondos en su cuenta para realizar la operación solicitada.
+
 ```    
 modifier balanceSuficiente(uint256 _cantidad) {
         if (balances[msg.sender] < _cantidad) {
@@ -163,12 +172,16 @@ modifier balanceSuficiente(uint256 _cantidad) {
         _;
 }
 ```
+
+* Verifica que la cantidad proporcionada sea mayor que cero, evitando operaciones con valores nulos o negativos.
 ```
 modifier cantidadValida(uint256 _cantidad) {
         require(_cantidad > 0, "Cantidad Cero");
         _;
 }
 ```
+
+* Verifica que el usuario tenga saldo suficiente para realizar la operación solicitada.
 ```    
 modifier fondosSuficientes(uint256 _cantidad) {
         require(balances[msg.sender] >= _cantidad, "Fondos Insuficientes");
