@@ -210,6 +210,32 @@ function deposito() external payable {
 }
 ```
 
+```
+function recuperarDeposito(uint256 _cantidad) external cantidadValida(_cantidad) fondosSuficientes(_cantidad){
+         
+        balances[msg.sender] -= _cantidad;
+
+        (bool resultado, ) = msg.sender.call{value: _cantidad}("");
+        require (resultado, "Transferencia Fallida");
+    }
+```
+
+```
+function retiro(uint256 _cantidad) external  noCero(_cantidad) dentroLimiteRetiro(_cantidad) {
+        
+        require(balances[msg.sender] >= _cantidad, "Balance Insuficiente");
+
+        balances[msg.sender] -= _cantidad;
+        totalDepositado -= _cantidad;
+        _incrementarCantidadRetiro();
+
+        (bool success, ) = msg.sender.call{value: _cantidad}("");
+        if (!success) revert TransferenciaFallida();
+
+        emit Retiro(msg.sender, _cantidad);
+}
+```
+
 ## Función Private
 
 ```
