@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.30;
 
 contract KipuBankContract {
     
@@ -98,18 +98,18 @@ contract KipuBankContract {
         require (resultado, "Transferencia Fallida");
     }
 
-    function retiro() external payable noCero(msg.value) dentroLimiteRetiro(msg.value) {
+    function retiro(uint256 _cantidad) external  noCero(_cantidad) dentroLimiteRetiro(_cantidad) {
         
-        require(balances[msg.sender] >= msg.value, "Balance Insuficiente");
+        require(balances[msg.sender] >= _cantidad, "Balance Insuficiente");
 
-        balances[msg.sender] -= msg.value;
-        totalDepositado -= msg.value;
+        balances[msg.sender] -= _cantidad;
+        totalDepositado -= _cantidad;
         _incrementarCantidadRetiro();
 
-        (bool success, ) = msg.sender.call{value: msg.value}("");
+        (bool success, ) = msg.sender.call{value: _cantidad}("");
         if (!success) revert TransferenciaFallida();
 
-        emit Retiro(msg.sender, msg.value);
+        emit Retiro(msg.sender, _cantidad);
     }
 
     function getBalance(address usuario) external view returns (uint256) {
