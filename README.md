@@ -262,6 +262,10 @@ Proporcionar el valor de despliegue (DEPLOY). Especifica monto Máximo de Deposi
   <img src="img\constructor.png" alt="Valores específicos en wei">
 </div>
 
+## Cómo interactuar con el contrato.
+
+
+
 ## Autor
 
 | [<img src="https://avatars.githubusercontent.com/u/123877201?v=4" width=115><br><sub>Jesus H. Parra B.</sub>](https://github.com/ing-jhparra)
