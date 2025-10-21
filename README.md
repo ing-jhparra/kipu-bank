@@ -122,14 +122,6 @@ constructor(uint256 _limiteTotalDeposito, uint256 _limiteRetiro) {
 }
 ```
 
-Usando valores específicos en wei al hacer deploy el contrato.
-
-<div align="center">
-  <img src="img\constructor.png" alt="Valores específicos en wei">
-</div>
-
-Importante en Solidity se trabaja en wei (1 ETH = 10^18 wei)
-
 ## Modificador (Modifier)
 
 * Si la cantidad es igual a 0, revierte la transacción con el error personalizado CantidadCero
@@ -258,12 +250,17 @@ function getBalance(address usuario) external view returns (uint256) {
 
 ## Instrucciones de despliegue
 
-En remix luego de compilar el Smart Contract ir a Environment y seleccioanr Sepolia Testnet - MetaMask
+En Remix, tras compilar el contrato, selecciona "Injected Provider - MetaMask" y asegurar de tener configurada la red de Sepolia Testnet en tu MetaMask.
 
 <div align="center">
   <img src="img\deployTestnet.png" alt="Deploy TestNet">
 </div>
 
+Proporcionar el valor de despliegue (DEPLOY). Especifica monto Máximo de Deposito y Mínimo para el retiro en wei requerido para la inicialización del contrato.
+
+<div align="center">
+  <img src="img\constructor.png" alt="Valores específicos en wei">
+</div>
 
 ## Autor
 
