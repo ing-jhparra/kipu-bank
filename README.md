@@ -256,6 +256,15 @@ function getBalance(address usuario) external view returns (uint256) {
 }
 ```
 
+## Instrucciones de despliegue
+
+En remix luego de compilar el Smart Contract ir a Environment y seleccioanr Sepolia Testnet - MetaMask
+
+<div align="center">
+  <img src="img\deployTestnet.png" alt="Deploy TestNet">
+</div>
+
+
 ## Autor
 
 | [<img src="https://avatars.githubusercontent.com/u/123877201?v=4" width=115><br><sub>Jesus H. Parra B.</sub>](https://github.com/ing-jhparra)
