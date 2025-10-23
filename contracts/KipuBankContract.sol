@@ -71,10 +71,18 @@ contract KipuBankContract {
     // Funciones
     receive() external payable {
         balances[msg.sender] += msg.value;
+        totalDepositado += msg.value;
+        _incrementarCantidadDeposito();
+
+        emit Deposito(msg.sender, msg.value);
     }
 
     fallback() external payable {
         balances[msg.sender] += msg.value;
+          totalDepositado += msg.value;
+        _incrementarCantidadDeposito();
+
+        emit Deposito(msg.sender, msg.value);
     }
 
     // Funciones
@@ -90,18 +98,20 @@ contract KipuBankContract {
         emit Deposito(msg.sender, msg.value);
     }
 
-    function recuperarDeposito(uint256 _cantidad) external cantidadValida(_cantidad) fondosSuficientes(_cantidad){
+    function recuperarDeposito(uint256 _cantidad) external cantidadValida(_cantidad) fondosSuficientes(_cantidad) dentroLimiteRetiro(_cantidad) {
          
         balances[msg.sender] -= _cantidad;
+        totalDepositado -= _cantidad;
+        _incrementarCantidadRetiro();
 
         (bool resultado, ) = msg.sender.call{value: _cantidad}("");
         require (resultado, "Transferencia Fallida");
+
+        emit Retiro(msg.sender, _cantidad);
     }
 
-    function retiro(uint256 _cantidad) external  noCero(_cantidad) dentroLimiteRetiro(_cantidad) {
+    function retiro(uint256 _cantidad) external  noCero(_cantidad) balanceSuficiente(_cantidad) dentroLimiteRetiro(_cantidad) {
         
-        require(balances[msg.sender] >= _cantidad, "Balance Insuficiente");
-
         balances[msg.sender] -= _cantidad;
         totalDepositado -= _cantidad;
         _incrementarCantidadRetiro();
