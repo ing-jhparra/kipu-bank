@@ -184,18 +184,13 @@ modifier fondosSuficientes(uint256 _cantidad) {
 ## Función External Payable
 
 ```
-function deposito() external payable {
+function deposito() external payable noCero(msg.value) dentroLimiteDeposito(msg.value) {
 
-        // msg.value es cantidad de ETH (en wei)
-        bool isZeroAmount = msg.value == 0;
-        bool exceedsCap = totalDepositedo + msg.value > limiteTotalDeposito;
+        /* msg.sender representa la dirección (billetera o contrato) y 
+           msg.value representa la cantidad de ETH (en wei) que se envía junto con una transacción */
 
-        if (isZeroAmount) revert ZeroAmount();
-        if (exceedsCap) revert DepositExceedsBankCap();
-
-        // msg.sender es la dirección (billetera o contrato)
         balances[msg.sender] += msg.value;
-        totalDepositedo += msg.value;
+        totalDepositado += msg.value;
         _incrementarCantidadDeposito();
 
         emit Deposito(msg.sender, msg.value);
@@ -203,20 +198,22 @@ function deposito() external payable {
 ```
 
 ```
-function recuperarDeposito(uint256 _cantidad) external cantidadValida(_cantidad) fondosSuficientes(_cantidad){
+function recuperarDeposito(uint256 _cantidad) external cantidadValida(_cantidad) fondosSuficientes(_cantidad) dentroLimiteRetiro(_cantidad) {
          
         balances[msg.sender] -= _cantidad;
+        totalDepositado -= _cantidad;
+        _incrementarCantidadRetiro();
 
         (bool resultado, ) = msg.sender.call{value: _cantidad}("");
         require (resultado, "Transferencia Fallida");
-    }
+
+        emit Retiro(msg.sender, _cantidad);
+}
 ```
 
 ```
-function retiro(uint256 _cantidad) external  noCero(_cantidad) dentroLimiteRetiro(_cantidad) {
+function retiro(uint256 _cantidad) external  noCero(_cantidad) balanceSuficiente(_cantidad) dentroLimiteRetiro(_cantidad) {
         
-        require(balances[msg.sender] >= _cantidad, "Balance Insuficiente");
-
         balances[msg.sender] -= _cantidad;
         totalDepositado -= _cantidad;
         _incrementarCantidadRetiro();
