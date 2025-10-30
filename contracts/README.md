@@ -12,11 +12,17 @@
 ### Jerarquía
 
 PROPIETARIO 
+
     ↓
+
 ADMINISTRADORES  
+
     ↓
-OPERADORES 
+
+OPERADORES
+
     ↓
+
 USUARIOS 
 
 ### Los Contratos Inteligentes
@@ -37,30 +43,12 @@ Este contrato extiende las funcionalidades del token para crear un sistema de de
 ### Estructura de Herencia
 
 RoleContract (Base)
+
     ↑
+
 BolivaresFuertesContract (ERC20 + RoleContract)  
+
     ↑
+
 KipuBankContract (RoleContract + BolivaresFuertesContract)
 
-## Funcionalidades Principales
-
-### Depositos
-Los usuarios pueden depositar ETH de 3 formas:
-
-- Función deposito()
-- Enviando ETH directamente (función receive())
-- Cualquier transacción (función fallback())
-
-### Retiros
-- Los usuarios pueden retirar hasta el límite establecido
-- Deben tener balance suficiente
-
-### Límites de Seguridad
-limiteTotalDeposito: Máximo total que puede haber en el contrato
-limiteRetiro: Máximo que un usuario puede retirar por transacción
-
-## Pruebas 
-### Propietario Inicial
-### Propietario gestiona los Administradores
-### Administradores gestiona los Operadores
-### Registro Automático de Usuarios
