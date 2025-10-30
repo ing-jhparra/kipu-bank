@@ -27,18 +27,12 @@ USUARIOS
 
 ### Los Contratos Inteligentes
 
-- RoleContract: 
+- RoleContract: Este contrato establece un sistema de permisos jerárquico para controlar quién puede ejecutar funciones críticas.
 
-Este contrato establece un sistema de permisos jerárquico para controlar quién puede ejecutar funciones críticas.
-
-- BolivaresFuertesContract:
-
-Este contrato crea un token ERC-20 y le da la capacidad de ser comprado con Ether.
+- BolivaresFuertesContract: Este contrato crea un token ERC-20 y le da la capacidad de ser comprado con Ether.
 
 
-- KipuBankContract:
-
-Este contrato extiende las funcionalidades del token para crear un sistema de depósito y retiro de ETH con límites.
+- KipuBankContract: Este contrato extiende las funcionalidades del token para crear un sistema de depósito y retiro de ETH con límites.
 
 ### Estructura de Herencia
 
