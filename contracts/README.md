@@ -11,19 +11,27 @@
 
 ### Jerarquía
 
-PROPIETARIO 
+PROPIETARIO : Nombrar y remover administradores, Transferir la propiedad completa del sistema, Crear nuevos tokens BsF (aumentar supply), Retirar todo el ETH acumulado en el contrato
 
     ↓
 
-ADMINISTRADORES  
+ADMINISTRADORES :   Gestionar el equipo operativo, Modificar la tasa ETH ↔ BsF, 
 
     ↓
 
-OPERADORES
+OPERADORES : Realizar retiros sin límites normales, Consultar estados internos del sistema, Depositar y retirar ETH con límites, Convertir ETH a tokens BsF, Consultar sus propios balances y cálculos
 
     ↓
 
 USUARIOS 
+
+### Permisos por Rol
+
+<div align="center">
+  <img src="img\permisos.png" alt="Permisos por Role">
+</div>
+
+
 
 ### Los Contratos Inteligentes
 
