@@ -28,7 +28,7 @@ USUARIOS
 ### Permisos por Rol
 
 <div align="center">
-  <img src="img\permisos.png" alt="Permisos">
+  <img src=".\img\permisos.png" alt="Permisos">
 </div>
 
 
