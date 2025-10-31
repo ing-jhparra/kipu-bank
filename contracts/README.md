@@ -22,3 +22,34 @@ A continuación, se detalla la lógica y estructura de cada contrato:
 | Administrador   | soloAdministrador         | Autoridad de gestión. Controla parámetros económicos y la operativa de seguridad.<br>Gestionar Operadores: Agregar/Eliminar Operadores.<br>Actualizar Tasa de cambio (ETH a BSF).<br>Establecer Límite total del banco en USD (limiteBancoUSD).                                        |
 | Operador        | soloOperador              | Autoridad de emergencia. Enfocado en la seguridad y el manejo de fondos críticos.<br>Ejecutar Retiro de Emergencia de ETH.                                                                                                                                                             |
 | Usuario/Cliente |                           | Cliente del banco. Su propósito es interactuar con los servicios financieros del contrato.<br>Depositar ETH o tokens ERC-20.<br>Retirar sus propios balances depositados.<br>Convertir ETH a BSF (el token del contrato).                                                              |
+
+
+Funciones de los contratos
+
+| **Contrato**             | **Función**              | **Rol de Acceso**    | **Propósito**                                                                                    |
+|--------------------------|--------------------------|----------------------|--------------------------------------------------------------------------------------------------|
+| RoleContract             | agregarAdministrador     | Propietario          | Otorga el rol de Administrador a una dirección.                                                  |
+|                          | eliminarAdministrador    | Propietario          | Revoca el rol de Administrador a una dirección.                                                  |
+|                          | agregarOperador          | Administrador        | Otorga el rol de Operador a una dirección.                                                       |
+|                          | eliminarOperador         | Administrador        | Revoca el rol de Operador a una dirección.                                                       |
+|                          | transferirPropiedad      | Propietario          | Cambia la dirección del Propietario del contrato.                                                |
+|                          | esPropietario            | Cualquiera (View)    | Consulta si una dirección tiene el rol de Propietario.                                           |
+|                          | esAdministrador          | Cualquiera (View)    | Consulta si una dirección tiene el rol de Administrador.                                         |
+|                          | esOperador               | Cualquiera (View)    | Consulta si una dirección tiene el rol de Operador.                                              |
+| BolivaresFuertesContract | previsualizarConversion  | Cualquiera (View)    | Calcula cuántos BSF se obtendrían por una cantidad de ETH, sin ejecutar la transacción.          |
+|                          | convertirETHaBSF         | Cualquiera (Payable) | Permite a los usuarios enviar ETH al contrato y recibir la cantidad equivalente de tokens BSF.   |
+|                          | actualizarTasa           | Administrador        | Modifica la tasa de cambio de BSF por ETH.                                                       |
+|                          | calcularBolivares        | Cualquiera (View)    | Idéntica a previsualizarConversion, calcula BSF por ETH.                                         |
+|                          | mint                     | Propietario          | Acuña (crea) nuevos tokens BSF y los asigna a una dirección.                                     |
+|                          | retirarETH               | Propietario          | Retira el saldo total de ETH del contrato (acumulado de las conversiones) hacia el Propietario.  |
+| KipuBankContract         | depositoETH              | Cualquiera (Payable) | Permite depositar ETH en el banco interno. Sujeto a límites de seguridad en USD (dentroBankCap). |
+|                          | depositoToken            | Cualquiera           | Permite depositar un token ERC-20 específico en el banco. Requiere aprobación previa (approve).  |
+|                          | retiroETH                | Cualquiera           | Permite al usuario retirar su saldo de ETH depositado. Sujeto a límite por retiro.               |
+|                          | retiroToken              | Cualquiera           | Permite al usuario retirar su saldo de tokens depositado. Sujeto a límite por retiro.            |
+|                          | emergenciaRetiro         | Operador             | Permite retirar ETH de forma manual a una dirección en casos de emergencia.                      |
+|                          | obtenerBalance           | Cualquiera (View)    | Consulta el balance interno de un usuario para un token específico (incluyendo ETH).             |
+|                          | obtenerBalanceContrato   | Cualquiera (View)    | Retorna la cantidad total de ETH que tiene el contrato.                                          |
+|                          | obtenerPrecioETHUSD      | Cualquiera (View)    | Consulta el precio actual de ETH en USD usando el oráculo de Chainlink.                          |
+|                          | convertirETHaUSD         | Cualquiera (View)    | Convierte una cantidad de ETH (en wei) a su valor equivalente en USD utilizando el oráculo.      |
+|                          | establecerLimiteBancoUSD | Administrador        | Actualiza el límite máximo de valor que el banco puede contener, medido en USD.                  |
+|                          | convertirDecimalesUSDC   | Cualquiera (View)    | Función auxiliar para escalar la cantidad de un token a 6 decimales (formato USDC).              |
