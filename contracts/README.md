@@ -14,11 +14,6 @@ A continuación, se detalla la lógica y estructura de cada contrato:
 | KipuBankContract         | Banca Multi-Token y Oráculo.     | Permite depósitos y retiros de ETH y cualquier token ERC-20. Almacena balances internos. Usa Chainlink para obtener el precio ETH/USD e imponer un límite de seguridad (limiteBancoUSD). | Hereda de BolivaresFuertesContract. |
 
 
-<div align="center">
-  <img src="..\img\contratos.png" alt="Permisos">
-</div>
-
-
 ### Roles Jerárquicos y su Lógica de Acceso en el sistema de contratos
 
 <div align="center">
