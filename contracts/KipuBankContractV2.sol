@@ -2,6 +2,7 @@
 pragma solidity ^0.8.30;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 // Contrato gestión de Roles
 contract RoleContract {
@@ -119,7 +120,7 @@ contract BolivaresFuertesContract is ERC20, RoleContract {
     uint256 public tasaCambio;
 
     event TasaCambioActualizada(uint256 nuevaTasa);
-    event ETHConvertidoABSF(address usuario, uint256 ethAmount, uint256 bsfAmount);
+    event ETHConvertidoABolivares (address usuario, uint256 ethAmount, uint256 bsfAmount);
 
     constructor() ERC20("Bolivares Fuerte", "BSF") {
         
@@ -130,7 +131,7 @@ contract BolivaresFuertesContract is ERC20, RoleContract {
         mint(msg.sender, 1000000 * 10**18);
     }
 
-    function previewConversion(uint256 _ethAmount) external view returns (uint256) {
+    function previsualizarConversion(uint256 _ethAmount) external view returns (uint256) {
         require(tasaCambio > 0, "Tasa de cambio no configurada");
         return (_ethAmount * tasaCambio) / 1e18;
     }
@@ -145,7 +146,7 @@ contract BolivaresFuertesContract is ERC20, RoleContract {
         // Transferir los BsF al usuario
         _transfer(propietario, msg.sender, cantidadBSF);
         
-        emit ETHConvertidoABSF(msg.sender, msg.value, cantidadBSF);
+        emit ETHConvertidoABolivares (msg.sender, msg.value, cantidadBSF);
     }
 
      // Función para actualizar la tasa de cambio (solo el dueño)
@@ -156,7 +157,7 @@ contract BolivaresFuertesContract is ERC20, RoleContract {
     }
 
     // Función para calcular cuántos BsF da por ETH
-    function calcularBsF(uint256 _ethAmount) external view returns (uint256) {
+    function calcularBolivares(uint256 _ethAmount) external view returns (uint256) {
         return (_ethAmount * tasaCambio) / 1e18;
     }
 
@@ -172,26 +173,28 @@ contract BolivaresFuertesContract is ERC20, RoleContract {
 
 }
 
+// Contrato soporte multi-token y contabilidad interna
 contract KipuBankContract is BolivaresFuertesContract {
-    // Balances
-    mapping(address => uint256) private balances;
-    mapping(address => uint256) private balancesBsF;
+
+    AggregatorV3Interface internal fuentePrecio;
+
+    // Map: usuario => token => saldo
+    mapping(address => mapping(address => uint256)) private balances;
     mapping(address => bool) public usuarios;
 
     // Variables y Constantes
     uint256 public totalDepositado;
     uint256 public cantidadDepositos;
     uint256 public cantidadRetiros;
-    uint256 public immutable limiteTotalDeposito; 
+    uint256 public immutable limiteTotalDeposito;
     uint256 public immutable limiteRetiro;
+    uint256 public limiteBancoUSD;
 
-    // Eventos
-    event Deposito(address indexed usuario, uint256 cantidad);
-    event Retiro(address indexed usuario, uint256 cantidad);
+    event Deposito(address indexed usuario, address indexed token, uint256 cantidad);
+    event Retiro(address indexed usuario, address indexed token, uint256 cantidad);
     event UsuarioRegistrado(address indexed usuario);
-    event RetiroEmergencia(address indexed operador, address destino, uint256 cantidad);
+    event RetiroDeEmergencia(address indexed operador, address destino, uint256 cantidad);
 
-    // Errores
     error ExcedeLimiteDeposito();
     error CantidadCero();
     error BalanceInsuficiente();
@@ -199,18 +202,20 @@ contract KipuBankContract is BolivaresFuertesContract {
     error TransferenciaFallida();
     error FondosInsuficientesContrato();
 
-    // Constructor
-    constructor(uint256 _limiteTotalDeposito, uint256 _limiteRetiro) {
+    constructor(uint256 _limiteTotalDeposito, uint256 _limiteRetiro, uint256 _limiteBancoUSD, address _fuentePrecio) {
         limiteTotalDeposito = _limiteTotalDeposito;
         limiteRetiro = _limiteRetiro;
+
+        // Inicializa el oráculo en el constructor (ETH/USD en Sepolia/Goerli/Ethereum Mainnet)
+        limiteBancoUSD = _limiteBancoUSD;
+        fuentePrecio = AggregatorV3Interface(_fuentePrecio);
     }
 
-    // Modificadores adicionales
     modifier noCero(uint256 _cantidad) {
         if (_cantidad == 0) revert CantidadCero();
         _;
     }
-    
+
     modifier dentroLimiteDeposito(uint256 _cantidad) {
         if (totalDepositado + _cantidad > limiteTotalDeposito) {
             revert ExcedeLimiteDeposito();
@@ -224,94 +229,87 @@ contract KipuBankContract is BolivaresFuertesContract {
         }
         _;
     }
-    
-    modifier balanceSuficiente(uint256 _cantidad) {
-        if (balances[msg.sender] < _cantidad) {
-            revert BalanceInsuficiente();
-        }
+
+    modifier balanceSuficiente(address token, uint256 _cantidad) {
+        if (balances[msg.sender][token] < _cantidad) revert BalanceInsuficiente();
         _;
     }
 
-    // Funciones de depósito
-    receive() external payable {
-        _depositar(msg.sender, msg.value);
+    function depositoToken(address token, uint256 cantidad) external noCero(cantidad) dentroLimiteDeposito(cantidad) {
+        IERC20(token).transferFrom(msg.sender, address(this), cantidad);
+        _depositar(msg.sender, token, cantidad);
     }
 
-    fallback() external payable {
-        _depositar(msg.sender, msg.value);
-    }
-      
-    function deposito() 
-        external 
-        payable 
-        noCero(msg.value) 
-        dentroLimiteDeposito(msg.value) 
-    {
-        _depositar(msg.sender, msg.value);
-    }
-
-    // Función de retiro normal
-    function retiro(uint256 _cantidad)
+    function retiroETH(uint256 cantidad)
         external
-        noCero(_cantidad)
-        balanceSuficiente(_cantidad)
-        dentroLimiteRetiro(_cantidad)
+        noCero(cantidad)
+        balanceSuficiente(address(0), cantidad)
+        dentroLimiteRetiro(cantidad)
     {
-        balances[msg.sender] -= _cantidad;
-        totalDepositado -= _cantidad;
+        balances[msg.sender][address(0)] -= cantidad;
+        totalDepositado -= cantidad;
         cantidadRetiros++;
 
-        (bool success, ) = msg.sender.call{value: _cantidad}("");
+        (bool success, ) = msg.sender.call{value: cantidad}("");
         if (!success) revert TransferenciaFallida();
 
-        emit Retiro(msg.sender, _cantidad);
+        emit Retiro(msg.sender, address(0), cantidad);
     }
 
-    // Función de depósito interno
-    function _depositar(address _usuario, uint256 _cantidad) private {
-        balances[_usuario] += _cantidad;
-        totalDepositado += _cantidad;
+    function retiroToken(address token, uint256 cantidad)
+        external
+        noCero(cantidad)
+        balanceSuficiente(token, cantidad)
+        dentroLimiteRetiro(cantidad)
+    {
+        balances[msg.sender][token] -= cantidad;
+        totalDepositado -= cantidad;
+        cantidadRetiros++;
+
+        IERC20(token).transfer(msg.sender, cantidad);
+        emit Retiro(msg.sender, token, cantidad);
+    }
+
+    // Función interna para registrar depósitos multi-token
+    function _depositar(address usuario, address token, uint256 cantidad) private {
+        balances[usuario][token] += cantidad;
+        totalDepositado += cantidad;
         cantidadDepositos++;
 
-        // Registro automático del usuario
-        if (!usuarios[_usuario]) {
-            usuarios[_usuario] = true;
-            emit UsuarioRegistrado(_usuario);
+        if (!usuarios[usuario]) {
+            usuarios[usuario] = true;
+            emit UsuarioRegistrado(usuario);
         }
 
-        emit Deposito(_usuario, _cantidad);
+        emit Deposito(usuario, token, cantidad);
     }
 
-    // Retiro de emergencia (solo operadores)
+    // Emergencia solo para Ether
     function emergenciaRetiro(address payable destino, uint256 cantidad)
         external
         soloOperador
         noCero(cantidad)
     {
         if (address(this).balance < cantidad) revert FondosInsuficientesContrato();
-        
         (bool success, ) = destino.call{value: cantidad}("");
         if (!success) revert TransferenciaFallida();
 
-        emit RetiroEmergencia(msg.sender, destino, cantidad);
+        emit RetiroDeEmergencia(msg.sender, destino, cantidad);
     }
 
-    // Funciones de consulta
-    function getBalance(address usuario) external view returns (uint256) {
-        return balances[usuario];
+    // CONSULTA DE BALANCES: usuario, token
+    function obtenerBalance(address usuario, address token) external view returns (uint256) {
+        return balances[usuario][token];
     }
 
-    function getBalanceContrato() external view returns (uint256) {
+    function obtenerBalanceContrato() external view returns (uint256) {
         return address(this).balance;
     }
 
-    function getLimites() 
+    function obtenerLimites() 
         external 
         view 
-        returns (
-            uint256 limiteTotalDeposito_,
-            uint256 limiteRetiro_
-        ) 
+        returns (uint256 limiteTotalDeposito_, uint256 limiteRetiro_) 
     {
         return (limiteTotalDeposito, limiteRetiro);
     }
@@ -319,4 +317,63 @@ contract KipuBankContract is BolivaresFuertesContract {
     function esUsuarioRegistrado(address _usuario) external view returns (bool) {
         return usuarios[_usuario];
     }
+
+    // Obtiene el último precio ETH/USD de Chainlink
+    function obtenerPrecioETHUSD() public view returns (uint256) {
+        (, int price, , , ) = fuentePrecio.latestRoundData();
+        return uint256(price); // 8 decimales
+    }
+
+    // Convierte ETH a USD usando el oráculo
+    function convertirETHaUSD(uint256 ethAmountWei) public view returns (uint256) {
+        uint256 ethUSDPrice = obtenerPrecioETHUSD();
+        // ethAmountWei: 1e18 = 1 ETH, price tiene 8 decimales
+        return (ethAmountWei * ethUSDPrice) / 1e26; // Normaliza a 18 decimales
+    }
+
+    // Modificador para controlar el bank cap en USD
+    modifier dentroBankCap(uint256 _ethAmountWei) {
+        uint256 currentDepositedUSD = convertirETHaUSD(totalDepositado + _ethAmountWei);
+        require(currentDepositedUSD <= limiteBancoUSD, "Excede el bank cap USD");
+        _;
+    }
+
+    // Depósito con control de límite en USD
+    function depositoETH() 
+        external 
+        payable 
+        dentroBankCap(msg.value) 
+        /* ...tus otros modificadores... */
+    {
+        _depositar(msg.sender, address(0), msg.value);
+    }   
+
+    // Permite cambiar el limiteBancoUSD (solo propietario o admin)
+    function establecerLimiteBancoUSD(uint256 _newCap) external soloAdministrador {
+        limiteBancoUSD = _newCap;
+    }
+
+    // Convierte cualquier cantidad a formato USDC (6 decimales)
+function convertirDecimalesUSDC(address token, uint256 amount) public view returns (uint256) {
+    uint8 tokenDecimals;
+
+    if (token == address(0)) {
+        // Ether (ETH) estándar: 18 decimales
+        tokenDecimals = 18;
+    } else {
+        // Token ERC20
+        tokenDecimals = ERC20(token).decimals();
+    }
+
+    // Ajusta hacia USDC (6 decimales)
+    if (tokenDecimals == 6) {
+        // Ya es formato USDC
+        return amount;
+    } else if (tokenDecimals > 6) {
+        return amount / (10 ** (tokenDecimals - 6));
+    } else {
+        return amount * (10 ** (6 - tokenDecimals));
+    }
+}
+
 }
