@@ -16,6 +16,8 @@ A continuación, se detalla la lógica y estructura de cada contrato:
 
 ### Roles Jerárquicos y su Lógica de Acceso en el sistema de contratos
 
+El sistema utiliza tres roles jerárquicos (Propietario, Administrador y Operador) para controlar el acceso a funciones sensibles del contrato mediante modificadores de acceso (ej., soloPropietario, soloAdministrador, soloOperador), asegurando que solo el personal autorizado pueda gestionar parámetros, crear tokens o manejar emergencias.
+
 | **Rol**         | **Modificador de Acceso** | **Lógica y Permisos**                                                                                                                                                                                                                                                                  |
 |-----------------|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Propietario     | soloPropietario           | Máxima autoridad. Controla la administración, la propiedad del contrato y los fondos de emergencia.<br>Gestionar Administradores: Agregar/Eliminar Administradores.<br>Transferir Propiedad del contrato.<br>Crear (mint) nuevos tokens BSF.<br>Retirar ETH acumulado de conversiones. |
@@ -25,6 +27,8 @@ A continuación, se detalla la lógica y estructura de cada contrato:
 
 
 Funciones de los contratos
+
+Las funciones en Solidity son bloques de código ejecutables que encapsulan una lógica específica, siendo el medio principal para interactuar y modificar el estado de un contrato inteligente. Permiten definir las acciones que los usuarios o contratos pueden invocar, aplicando modificadores para controlar el acceso y la seguridad.
 
 | **Contrato**             | **Función**              | **Rol de Acceso**    | **Propósito**                                                                                    |
 |--------------------------|--------------------------|----------------------|--------------------------------------------------------------------------------------------------|
