@@ -316,3 +316,8 @@ El sistema implementa un conjunto de funciones organizadas en tres módulos prin
         </tr>
     </tbody>
 </table>
+
+## Autor
+
+| [<img src="https://avatars.githubusercontent.com/u/123877201?v=4" width=115><br><sub>Jesus H. Parra B.</sub>](https://github.com/ing-jhparra)
+| :---: |
