@@ -1,5 +1,29 @@
 ## Mejoras para el contrato KipuBank
 
+Este proyecto implementa un sistema bancario descentralizado con tres contratos inteligentes interconectados que ofrecen:
+
+- Sistema de Roles Jerárquico - Gestión de permisos para propietario, administradores y operadores
+- Token Bolívar Fuerte (BSF) - Token ERC20 con mecanismo de conversión ETH/BSF
+- Banco Multitoken - Plataforma bancaria con soporte para múltiples tokens y contabilidad interna
+
+### Las principales mejoras incluyen:
+
+- Arquitectura modular con herencia de contratos para mejor mantenibilidad
+- Sistema de seguridad robusto con modificadores de acceso y validaciones
+- Integración con Chainlink para oráculos de precios en tiempo real
+- Límites configurables para depósitos y retiros
+- Soporte multi-token con conversión automática de decimales
+
+## Decisiones de Diseño y Trade-offs
+
+- Usar herencia de contratos (RoleContract → BolivaresFuertesContract → KipuBankContract)
+- Implementar roles jerárquicos (Propietario → Administradores → Operadores)
+- Implementar múltiples capas de límites (total, por retiro, bank cap USD)
+- Usar oráculos descentralizados para precios
+- Función automática para convertir entre diferentes decimales de tokens
+- Tasa de cambio fija administrable vs oráculo en tiempo real
+- Incluir función de retiro de emergencia para operadores
+
 ## Estructura General del Código
 
 El código de Solidity que presentas define una estructura de tres contratos interconectados (RoleContract, BolivaresFuertesContract, y KipuBankContract) que, en conjunto, implementan un sistema de banca o depósito descentralizado que soporta roles de usuario, un token ERC-20 personalizado y la gestión de depósitos/retiros de múltiples tokens (incluido Ether).
@@ -98,7 +122,7 @@ El sistema utiliza tres roles jerárquicos (Propietario, Administrador y Operado
       </td>
     </tr>
   </tbody>
-</table>                                                            |
+</table>                                                           
 
 
 Funciones de los contratos
@@ -182,7 +206,7 @@ Las funciones en Solidity son bloques de código ejecutables que encapsulan una 
     <tr>
       <td style="border: 2px solid black; padding: 8px;">mint</td>
       <td style="border: 2px solid black; padding: 8px;">Propietario</td>
-      <td style="border: 2px solid black; padding: 8px;">Acuña (crea) nuevos tokens BSF y los asigna a una dirección.</td>
+      <td style="border: 2px solid black; padding: 8px;">Crea nuevos tokens BSF y los asigna a una dirección.</td>
     </tr>
     <tr>
       <td style="border: 2px solid black; padding: 8px;">retirarETH</td>
