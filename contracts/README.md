@@ -275,21 +275,6 @@ El sistema implementa un conjunto de funciones organizadas en tres módulos prin
 
 ## Resumen del Código Solidity
 
-<style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-    th, td {
-        border: 2px solid black;
-        padding: 8px;
-        text-align: left;
-    }
-    th {
-        background-color: #f2f2f2;
-    }
-</style>
-
 <table>
     <thead>
         <tr>
