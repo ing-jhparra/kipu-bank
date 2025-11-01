@@ -57,3 +57,148 @@ Las funciones en Solidity son bloques de código ejecutables que encapsulan una 
 |                          | convertirETHaUSD         | Cualquiera (View)    | Convierte una cantidad de ETH (en wei) a su valor equivalente en USD utilizando el oráculo.      |
 |                          | establecerLimiteBancoUSD | Administrador        | Actualiza el límite máximo de valor que el banco puede contener, medido en USD.                  |
 |                          | convertirDecimalesUSDC   | Cualquiera (View)    | Función auxiliar para escalar la cantidad de un token a 6 decimales (formato USDC).              |
+
+
+<table style="border: 2px solid black; border-collapse: collapse; width: 100%;">
+  <thead>
+    <tr>
+      <th style="border: 2px solid black; padding: 8px;">Contrato</th>
+      <th style="border: 2px solid black; padding: 8px;">Función</th>
+      <th style="border: 2px solid black; padding: 8px;">Rol de Acceso</th>
+      <th style="border: 2px solid black; padding: 8px;">Propósito</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- RoleContract -->
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;" rowspan="8">RoleContract</td>
+      <td style="border: 2px solid black; padding: 8px;">agregarAdministrador</td>
+      <td style="border: 2px solid black; padding: 8px;">Propietario</td>
+      <td style="border: 2px solid black; padding: 8px;">Otorga el rol de Administrador a una dirección.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">eliminarAdministrador</td>
+      <td style="border: 2px solid black; padding: 8px;">Propietario</td>
+      <td style="border: 2px solid black; padding: 8px;">Revoca el rol de Administrador a una dirección.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">agregarOperador</td>
+      <td style="border: 2px solid black; padding: 8px;">Administrador</td>
+      <td style="border: 2px solid black; padding: 8px;">Otorga el rol de Operador a una dirección.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">eliminarOperador</td>
+      <td style="border: 2px solid black; padding: 8px;">Administrador</td>
+      <td style="border: 2px solid black; padding: 8px;">Revoca el rol de Operador a una dirección.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">transferirPropiedad</td>
+      <td style="border: 2px solid black; padding: 8px;">Propietario</td>
+      <td style="border: 2px solid black; padding: 8px;">Cambia la dirección del Propietario del contrato.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">esPropietario</td>
+      <td style="border: 2px solid black; padding: 8px;">Cualquiera (View)</td>
+      <td style="border: 2px solid black; padding: 8px;">Consulta si una dirección tiene el rol de Propietario.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">esAdministrador</td>
+      <td style="border: 2px solid black; padding: 8px;">Cualquiera (View)</td>
+      <td style="border: 2px solid black; padding: 8px;">Consulta si una dirección tiene el rol de Administrador.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">esOperador</td>
+      <td style="border: 2px solid black; padding: 8px;">Cualquiera (View)</td>
+      <td style="border: 2px solid black; padding: 8px;">Consulta si una dirección tiene el rol de Operador.</td>
+    </tr>    
+    <!-- BolivaresFuertesContract -->
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;" rowspan="6">BolivaresFuertesContract</td>
+      <td style="border: 2px solid black; padding: 8px;">previsualizarConversion</td>
+      <td style="border: 2px solid black; padding: 8px;">Cualquiera (View)</td>
+      <td style="border: 2px solid black; padding: 8px;">Calcula cuántos BSF se obtendrían por una cantidad de ETH, sin ejecutar la transacción.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">convertirETHaBSF</td>
+      <td style="border: 2px solid black; padding: 8px;">Cualquiera (Payable)</td>
+      <td style="border: 2px solid black; padding: 8px;">Permite a los usuarios enviar ETH al contrato y recibir la cantidad equivalente de tokens BSF.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">actualizarTasa</td>
+      <td style="border: 2px solid black; padding: 8px;">Administrador</td>
+      <td style="border: 2px solid black; padding: 8px;">Modifica la tasa de cambio de BSF por ETH.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">calcularBolivares</td>
+      <td style="border: 2px solid black; padding: 8px;">Cualquiera (View)</td>
+      <td style="border: 2px solid black; padding: 8px;">Idéntica a previsualizarConversion, calcula BSF por ETH.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">mint</td>
+      <td style="border: 2px solid black; padding: 8px;">Propietario</td>
+      <td style="border: 2px solid black; padding: 8px;">Acuña (crea) nuevos tokens BSF y los asigna a una dirección.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">retirarETH</td>
+      <td style="border: 2px solid black; padding: 8px;">Propietario</td>
+      <td style="border: 2px solid black; padding: 8px;">Retira el saldo total de ETH del contrato (acumulado de las conversiones) hacia el Propietario.</td>
+    </tr>    
+    <!-- KipuBankContract -->
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;" rowspan="11">KipuBankContract</td>
+      <td style="border: 2px solid black; padding: 8px;">depositoETH</td>
+      <td style="border: 2px solid black; padding: 8px;">Cualquiera (Payable)</td>
+      <td style="border: 2px solid black; padding: 8px;">Permite depositar ETH en el banco interno. Sujeto a límites de seguridad en USD (dentroBankCap).</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">depositoToken</td>
+      <td style="border: 2px solid black; padding: 8px;">Cualquiera</td>
+      <td style="border: 2px solid black; padding: 8px;">Permite depositar un token ERC-20 específico en el banco. Requiere aprobación previa (approve).</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">retiroETH</td>
+      <td style="border: 2px solid black; padding: 8px;">Cualquiera</td>
+      <td style="border: 2px solid black; padding: 8px;">Permite al usuario retirar su saldo de ETH depositado. Sujeto a límite por retiro.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">retiroToken</td>
+      <td style="border: 2px solid black; padding: 8px;">Cualquiera</td>
+      <td style="border: 2px solid black; padding: 8px;">Permite al usuario retirar su saldo de tokens depositado. Sujeto a límite por retiro.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">emergenciaRetiro</td>
+      <td style="border: 2px solid black; padding: 8px;">Operador</td>
+      <td style="border: 2px solid black; padding: 8px;">Permite retirar ETH de forma manual a una dirección en casos de emergencia.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">obtenerBalance</td>
+      <td style="border: 2px solid black; padding: 8px;">Cualquiera (View)</td>
+      <td style="border: 2px solid black; padding: 8px;">Consulta el balance interno de un usuario para un token específico (incluyendo ETH).</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">obtenerBalanceContrato</td>
+      <td style="border: 2px solid black; padding: 8px;">Cualquiera (View)</td>
+      <td style="border: 2px solid black; padding: 8px;">Retorna la cantidad total de ETH que tiene el contrato.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">obtenerPrecioETHUSD</td>
+      <td style="border: 2px solid black; padding: 8px;">Cualquiera (View)</td>
+      <td style="border: 2px solid black; padding: 8px;">Consulta el precio actual de ETH en USD usando el oráculo de Chainlink.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">convertirETHaUSD</td>
+      <td style="border: 2px solid black; padding: 8px;">Cualquiera (View)</td>
+      <td style="border: 2px solid black; padding: 8px;">Convierte una cantidad de ETH (en wei) a su valor equivalente en USD utilizando el oráculo.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">establecerLimiteBancoUSD</td>
+      <td style="border: 2px solid black; padding: 8px;">Administrador</td>
+      <td style="border: 2px solid black; padding: 8px;">Actualiza el límite máximo de valor que el banco puede contener, medido en USD.</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid black; padding: 8px;">convertirDecimalesUSDC</td>
+      <td style="border: 2px solid black; padding: 8px;">Cualquiera (View)</td>
+      <td style="border: 2px solid black; padding: 8px;">Función auxiliar para escalar la cantidad de un token a 6 decimales (formato USDC).</td>
+    </tr>
+  </tbody>
+</table>
