@@ -127,7 +127,7 @@ El sistema utiliza tres roles jerárquicos (Propietario, Administrador y Operado
 
 ## Funciones
 
-Las funciones en Solidity son bloques de código ejecutables que encapsulan una lógica específica, siendo el medio principal para interactuar y modificar el estado de un contrato inteligente. Permiten definir las acciones que los usuarios o contratos pueden invocar, aplicando modificadores para controlar el acceso y la seguridad.
+El sistema implementa un conjunto de funciones organizadas en tres módulos principales: gestión de roles y permisos, operaciones con tokens personalizados, y servicios bancarios multi-activos. Estas funcionalidades permiten administrar usuarios privilegiados, convertir entre criptomonedas, realizar depósitos y retiros con límites de seguridad, consultar balances en tiempo real, y ejecutar operaciones de emergencia, todo dentro de una arquitectura descentralizada y segura.
       |
 <table style="border: 2px solid black; border-collapse: collapse; width: 100%;">
   <thead>
