@@ -125,7 +125,7 @@ El sistema utiliza tres roles jerárquicos (Propietario, Administrador y Operado
 </table>                                                           
 
 
-Funciones de los contratos
+## Funciones
 
 Las funciones en Solidity son bloques de código ejecutables que encapsulan una lógica específica, siendo el medio principal para interactuar y modificar el estado de un contrato inteligente. Permiten definir las acciones que los usuarios o contratos pueden invocar, aplicando modificadores para controlar el acceso y la seguridad.
       |
