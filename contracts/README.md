@@ -272,3 +272,62 @@ El sistema implementa un conjunto de funciones organizadas en tres módulos prin
     </tr>
   </tbody>
 </table>
+
+## Resumen del Código Solidity
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        border: 2px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+
+<table>
+    <thead>
+        <tr>
+            <th>Característica</th>
+            <th>Contrato(s) Principal(es)</th>
+            <th>Resumen</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Control de Acceso</strong></td>
+            <td><code>RoleContract</code>, <code>BolivaresFuertesContract</code>, <code>KipuBankContract</code></td>
+            <td>Se implementa un robusto sistema de roles: <strong>Propietario</strong>, <strong>Administradores</strong> y <strong>Operadores</strong>. Utiliza <strong>modificadores</strong> (<code>soloPropietario</code>, <code>soloAdministrador</code>, <code>soloOperador</code>) y errores personalizados para restringir el acceso a funciones críticas (ej. añadir roles, actualizar la tasa de cambio, retiros de emergencia). La propiedad se puede transferir.</td>
+        </tr>
+        <tr>
+            <td><strong>Declaraciones de Tipos</strong></td>
+            <td>Todos</td>
+            <td>El código utiliza tipos fundamentales de Solidity como <code>address</code> (para cuentas y tokens), <code>bool</code> (para verificar roles en <em>mappings</em>), <code>uint256</code> (para cantidades, saldos, límites, y tasas) y <em>mappings</em> (para almacenar roles y saldos). También emplea el tipo de interfaz <code>AggregatorV3Interface</code> para interactuar con Chainlink.</td>
+        </tr>
+        <tr>
+            <td><strong>Instancia de Oracle de Chainlink</strong></td>
+            <td><code>KipuBankContract</code></td>
+            <td>El contrato <code>KipuBankContract</code> inicializa una instancia de la interfaz <strong><code>AggregatorV3Interface</code></strong> (<code>fuentePrecio</code>) en su constructor, pasando la dirección del <em>data feed</em> (oráculo) de precios. Esto permite obtener el precio actual de ETH/USD a través de la función <code>obtenerPrecioETHUSD()</code>.</td>
+        </tr>
+        <tr>
+            <td><strong>Variables Constantes</strong></td>
+            <td><code>KipuBankContract</code></td>
+            <td>El contrato utiliza variables declaradas como <strong><code>immutable</code></strong> para establecer límites que se definen una sola vez en el constructor y no pueden ser modificados posteriormente. Ejemplos son <code>limiteTotalDeposito</code> y <code>limiteRetiro</code>.</td>
+        </tr>
+        <tr>
+            <td><strong>Mappings Anidados</strong></td>
+            <td><code>KipuBankContract</code></td>
+            <td>Se utiliza un <em>mapping anidado</em> privado: <code>mapping(address => mapping(address => uint256)) private balances;</code>. Este almacena los saldos de los usuarios, donde la primera llave es la <strong>dirección del usuario</strong> (<code>address</code>) y la segunda llave es la <strong>dirección del token</strong> (<code>address</code>), mapeando al <strong>saldo</strong> (<code>uint256</code>) de ese token para el usuario.</td>
+        </tr>
+        <tr>
+            <td><strong>Función de Conversión de Decimales y Valores</strong></td>
+            <td><code>BolivaresFuertesContract</code>, <code>KipuBankContract</code></td>
+            <td>El contrato <code>BolivaresFuertesContract</code> incluye funciones para calcular la conversión de <strong>ETH a BSF</strong> (Bolívares Fuerte) usando una <code>tasaCambio</code> predefinida y normalizando los decimales (dividiendo por $10^{18}$). El contrato <code>KipuBankContract</code> añade la función <strong><code>convertirETHaUSD</code></strong> que utiliza el precio de Chainlink (8 decimales) para calcular el valor en USD de una cantidad de ETH (18 decimales), normalizando la operación al dividir por $10^{26}$ ($10^{18} \times 10^8$).</td>
+        </tr>
+    </tbody>
+</table>
