@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
+// Proporciona la implementación base del estándar de tokens ERC20
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+// Define las funciones para interactuar con data feeds de Chainlink
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
-// Contrato gestión de Roles
+// Contrato: Gestión de permisos para propietario, administradores y operadores
 contract RoleContract {
     
     // Roles
@@ -112,12 +115,14 @@ contract RoleContract {
     }
 }
 
-// Contrato soporte de Multitoken
-
+// Contrato: Token ERC20 con mecanismo de conversión ETH/BSF
 contract BolivaresFuertesContract is ERC20, RoleContract {
 
-     // Tasa de cambio: 1 ETH = X BSF
+    // Variables
+
     uint256 public tasaCambio;
+
+    // Eventos
 
     event TasaCambioActualizada(uint256 nuevaTasa);
     event ETHConvertidoABolivares (address usuario, uint256 ethAmount, uint256 bsfAmount);
@@ -131,6 +136,8 @@ contract BolivaresFuertesContract is ERC20, RoleContract {
         mint(msg.sender, 1000000 * 10**18);
     }
 
+    // Funciones
+
     function previsualizarConversion(uint256 _ethAmount) external view returns (uint256) {
         require(tasaCambio > 0, "Tasa de cambio no configurada");
         return (_ethAmount * tasaCambio) / 1e18;
@@ -140,40 +147,34 @@ contract BolivaresFuertesContract is ERC20, RoleContract {
         require(msg.value > 0, "Debes enviar ETH");
         require(tasaCambio > 0, "Tasa de cambio no configurada");
         
-        // Calcular cuántos BsF corresponde
         uint256 cantidadBSF = (msg.value * tasaCambio) / 1e18;
         
-        // Transferir los BsF al usuario
         _transfer(propietario, msg.sender, cantidadBSF);
         
         emit ETHConvertidoABolivares (msg.sender, msg.value, cantidadBSF);
     }
 
-     // Función para actualizar la tasa de cambio (solo el dueño)
     function actualizarTasa(uint256 _nuevaTasa) external soloAdministrador {
         require(_nuevaTasa > 0, "La tasa debe ser mayor a cero");
         tasaCambio = _nuevaTasa;
         emit TasaCambioActualizada(_nuevaTasa);
     }
 
-    // Función para calcular cuántos BsF da por ETH
     function calcularBolivares(uint256 _ethAmount) external view returns (uint256) {
         return (_ethAmount * tasaCambio) / 1e18;
     }
 
-    // Ejemplo de función que solo el owner puede ejecutar
     function mint(address to, uint256 amount) public soloPropietario {
         _mint(to, amount);
     }
-
-    // Función para retirar el ETH del contrato (solo dueño)
+   
     function retirarETH() external soloPropietario {
         payable(propietario).transfer(address(this).balance);
     }
 
 }
 
-// Contrato soporte multi-token y contabilidad interna
+// Contrato: Plataforma bancaria con soporte para múltiples tokens y contabilidad interna
 contract KipuBankContract is BolivaresFuertesContract {
 
     AggregatorV3Interface internal fuentePrecio;
@@ -190,10 +191,14 @@ contract KipuBankContract is BolivaresFuertesContract {
     uint256 public immutable limiteRetiro;
     uint256 public limiteBancoUSD;
 
+    // Eventos
+
     event Deposito(address indexed usuario, address indexed token, uint256 cantidad);
     event Retiro(address indexed usuario, address indexed token, uint256 cantidad);
     event UsuarioRegistrado(address indexed usuario);
     event RetiroDeEmergencia(address indexed operador, address destino, uint256 cantidad);
+
+    // Errores
 
     error ExcedeLimiteDeposito();
     error CantidadCero();
@@ -210,6 +215,8 @@ contract KipuBankContract is BolivaresFuertesContract {
         limiteBancoUSD = _limiteBancoUSD;
         fuentePrecio = AggregatorV3Interface(_fuentePrecio);
     }
+   
+    // Modificadores
 
     modifier noCero(uint256 _cantidad) {
         if (_cantidad == 0) revert CantidadCero();
@@ -234,6 +241,14 @@ contract KipuBankContract is BolivaresFuertesContract {
         if (balances[msg.sender][token] < _cantidad) revert BalanceInsuficiente();
         _;
     }
+
+    modifier dentroBankCap(uint256 _ethAmountWei) {
+        uint256 currentDepositedUSD = convertirETHaUSD(totalDepositado + _ethAmountWei);
+        require(currentDepositedUSD <= limiteBancoUSD, "Excede el bank cap USD");
+        _;
+    }
+
+    // Funciones
 
     function depositoToken(address token, uint256 cantidad) external noCero(cantidad) dentroLimiteDeposito(cantidad) {
         IERC20(token).transferFrom(msg.sender, address(this), cantidad);
@@ -270,7 +285,6 @@ contract KipuBankContract is BolivaresFuertesContract {
         emit Retiro(msg.sender, token, cantidad);
     }
 
-    // Función interna para registrar depósitos multi-token
     function _depositar(address usuario, address token, uint256 cantidad) private {
         balances[usuario][token] += cantidad;
         totalDepositado += cantidad;
@@ -284,7 +298,6 @@ contract KipuBankContract is BolivaresFuertesContract {
         emit Deposito(usuario, token, cantidad);
     }
 
-    // Emergencia solo para Ether
     function emergenciaRetiro(address payable destino, uint256 cantidad)
         external
         soloOperador
@@ -297,7 +310,6 @@ contract KipuBankContract is BolivaresFuertesContract {
         emit RetiroDeEmergencia(msg.sender, destino, cantidad);
     }
 
-    // CONSULTA DE BALANCES: usuario, token
     function obtenerBalance(address usuario, address token) external view returns (uint256) {
         return balances[usuario][token];
     }
@@ -318,56 +330,39 @@ contract KipuBankContract is BolivaresFuertesContract {
         return usuarios[_usuario];
     }
 
-    // Obtiene el último precio ETH/USD de Chainlink
     function obtenerPrecioETHUSD() public view returns (uint256) {
         (, int price, , , ) = fuentePrecio.latestRoundData();
         return uint256(price); // 8 decimales
     }
 
-    // Convierte ETH a USD usando el oráculo
     function convertirETHaUSD(uint256 ethAmountWei) public view returns (uint256) {
         uint256 ethUSDPrice = obtenerPrecioETHUSD();
         // ethAmountWei: 1e18 = 1 ETH, price tiene 8 decimales
         return (ethAmountWei * ethUSDPrice) / 1e26; // Normaliza a 18 decimales
     }
 
-    // Modificador para controlar el bank cap en USD
-    modifier dentroBankCap(uint256 _ethAmountWei) {
-        uint256 currentDepositedUSD = convertirETHaUSD(totalDepositado + _ethAmountWei);
-        require(currentDepositedUSD <= limiteBancoUSD, "Excede el bank cap USD");
-        _;
-    }
-
-    // Depósito con control de límite en USD
     function depositoETH() 
         external 
         payable 
         dentroBankCap(msg.value) 
-        /* ...tus otros modificadores... */
     {
         _depositar(msg.sender, address(0), msg.value);
     }   
 
-    // Permite cambiar el limiteBancoUSD (solo propietario o admin)
     function establecerLimiteBancoUSD(uint256 _newCap) external soloAdministrador {
         limiteBancoUSD = _newCap;
     }
 
-    // Convierte cualquier cantidad a formato USDC (6 decimales)
-function convertirDecimalesUSDC(address token, uint256 amount) public view returns (uint256) {
+    function convertirDecimalesUSDC(address token, uint256 amount) public view returns (uint256) {
     uint8 tokenDecimals;
 
     if (token == address(0)) {
-        // Ether (ETH) estándar: 18 decimales
         tokenDecimals = 18;
     } else {
-        // Token ERC20
         tokenDecimals = ERC20(token).decimals();
     }
 
-    // Ajusta hacia USDC (6 decimales)
     if (tokenDecimals == 6) {
-        // Ya es formato USDC
         return amount;
     } else if (tokenDecimals > 6) {
         return amount / (10 ** (tokenDecimals - 6));
