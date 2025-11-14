@@ -129,13 +129,10 @@ El módulo de swaps está bien testeado a nivel unitario, incluso con fuzzing, l
 
 * Unit testing con Foundry / Hardhat
 Validación de límites, Validación de balances, Roles.
-
 * Fuzzing / Property-based testing
 Especialmente para: Invariantes en depósitos y retiros. Oráculo fluctuante. Datos inesperados del usuario.
-
 * Tests de integración multi-contrato
 Simular oráculo, tokens, roles. 
-
 * Análisis estático y simbólico
 Con herramientas como: Slither, MythX, Certora Rules (ideal para invariantes)
 
