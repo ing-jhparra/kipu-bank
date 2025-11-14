@@ -169,7 +169,7 @@ Riesgo grave: falta de límites sobre retiros de emergencia.
 
 No están documentados ni implementados explícitamente. Se especifican en la sección 4.
 
-## Vectores de ataque y modelo de amenazas
+## 3. Vectores de ataque y modelo de amenazas
 
 A continuación se identifican 4 escenarios de riesgo realista que un auditor reportaría.
 
@@ -218,18 +218,16 @@ La función: _transfer(propietario, msg.sender, cantidadBSF); requiere que el pr
 Riesgo:
 Propietario sin fondos tiene conversiones fallidas llevando a errores DoS. Un atacante puede provocar DoS haciendo drain de BSF.
 
-## 5. Impacto de las violaciones de invariantes
+## 4. Impacto de las violaciones de invariantes
 
 * Violación Invariante 1
 Impacto: pérdida total de reservas, insolvencia permanente.
-
 * Violación Invariante 2
 Impacto: extracción indebida de fondos → bancarrota del protocolo.
-
 * Violación Invariante 3
 Impacto: colapso económico por aceptar depósitos mayores al límite del banco.
 
-## 6. Recomendaciones
+## 5 Recomendaciones
 
 Para cada invariante se proponen validaciones.
 
@@ -270,7 +268,7 @@ Ejemplo:
 forge test --via-ir --match-test invariant_
 ```
 
-## 7. Conclusión y próximos pasos
+## 6. Conclusión y próximos pasos
 
 KipuBankV3 presenta una arquitectura sólida conceptualmente, pero no está listo para un entorno de producción. Los puntos críticos son:
 
