@@ -297,3 +297,8 @@ Próximos pasos recomendados
 * Generar documentación completa del protocolo.
 * Añadir diagramas de arquitectura y flujo.
 * Considerar migrar lógica de emergencia a Gnosis Safe o multisig.
+
+## Autor
+
+| [<img src="https://avatars.githubusercontent.com/u/123877201?v=4" width=115><br><sub>Jesus H. Parra B.</sub>](https://github.com/ing-jhparra)
+| :---: |
