@@ -44,6 +44,10 @@ A continuación se analiza qué tan preparado está el protocolo para una audito
 
 ## 2.1 Cobertura de pruebas
 
+<div align="center">
+  <img src="..\img\testcovertura.png" alt="Deploy TestNet">
+</div>
+
 Resumen global de la ejecución de pruebas
 
 La suite completa ejecutó 21 pruebas, distribuidas en tres módulos principales:
