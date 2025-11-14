@@ -217,33 +217,6 @@ La función: _transfer(propietario, msg.sender, cantidadBSF); requiere que el pr
 Riesgo:
 Propietario sin fondos tiene conversiones fallidas llevando a errores DoS. Un atacante puede provocar DoS haciendo drain de BSF.
 
-## 4. Especificación de invariantes
-
-Aquí se especifican las reglas que SIEMPRE deben cumplirse.
-
-Invariante 1 – El banco NUNCA puede tener balances internos mayores que los fondos reales
-
-```
-sum(balances[usuarios][token]) ≤ balance_real_contrato(token)
-```
-
-Tokens/ETH internos deben coincidir con reservas reales.
-
-Invariante 2 – Un usuario nunca puede retirar más de lo que deposita
-```
-balances[user][token] >= 0
-```
-y
-
-```
-retiros ≤ depositos
-```
-Invariante 3 – El bank cap USD debe cumplirse siempre
-
-```
-convertirETHaUSD(totalDepositado) ≤ limiteBancoUSD
-```
-
 ## 5. Impacto de las violaciones de invariantes
 
 * Violación Invariante 1
